@@ -287,11 +287,11 @@ export function createWorld(container) {
   let lookX=0,lookY=0;
   const pointer={x:0,y:0};
   function resize(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);}
-  function render(time,started=false,dt=1/60){
+  function render(time,started=false,dt=1/60,steering={x:1.15,lean:0}){
     const t=wrap(time,DURATION),phase=t/DURATION*TAU,travel=t*SPEED;
     chunks.forEach((g,i)=>{g.position.z=wrap(i*CHUNK+travel+40,WORLD)-WORLD+40;});
-    const riderX=1.15+Math.sin(phase*6)*.42+Math.sin(phase*13)*.12;
-    rider.position.set(riderX,.014+Math.sin(phase*360)*.013,3);rider.rotation.z=Math.cos(phase*6)*-.018;rider.rotation.y=Math.cos(phase*6)*.025;
+    const riderX=steering.x;
+    rider.position.set(riderX,.014+Math.sin(phase*360)*.013,3);rider.rotation.z=-steering.lean*.14;rider.rotation.y=-steering.lean*.10;
     for(const car of traffic){const z=wrap(car.offset+t/DURATION*car.span*car.cycles+20,car.span)-car.span+20;let x=car.lane+Math.sin(phase*car.cycles+car.phase)*.3;const clearance=Math.exp(-Math.pow((z-3)/5,2));if(!car.oncoming&&car.lane<2)x+=clearance*1.3;car.object.position.set(x,.014,z);car.object.rotation.z=Math.cos(phase*car.cycles+car.phase)*.018;}
     van.position.set(-3.7,0,wrap(-60+t/DURATION*540,180)-145);van.rotation.y=Math.PI;
     lookX+=(pointer.x-lookX)*Math.min(1,dt*2);lookY+=(pointer.y-lookY)*Math.min(1,dt*2);
