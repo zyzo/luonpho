@@ -3,7 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "scripts": { "dev": "vite --host 0.0.0.0", "build": "vite build", "preview": "vite preview --host 0.0.0.0" },
-  "dependencies": { "three": "^0.180.0" },
-  "devDependencies": { "vite": "^7.1.7" }
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "start": "sirv dist --host 127.0.0.1 --port 4173 --etag"
+  },
+  "dependencies": {
+    "sirv-cli": "3.0.1",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "vite": "^7.1.7"
+  }
 }

@@ -1,0 +1,1 @@
+- Use commit message with verb prefix (e.g. Add new button)
