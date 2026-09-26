@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#e9e6db" />
+    <meta name="description" content="Lượn Phố — a three-minute motorcycle daydream through the beautiful chaos of a Vietnamese street." />
+    <title>Lượn Phố — A little ride through Vietnam</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23de512f'/%3E%3Ctext x='32' y='46' text-anchor='middle' font-size='48' fill='%23fff2cf'%3El%3C/text%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <main id="app">
+      <div id="scene" aria-label="Animated third-person motorcycle ride through a Vietnamese street"></div>
+      <div class="vignette"></div>
+      <header class="masthead">
+        <a class="wordmark" href="./" aria-label="Lượn Phố home">lượn phố<span class="brand-dot">.</span></a>
+        <div class="edition"><span class="live-dot"></span> A VIETNAMESE STREET DAYDREAM <span class="edition-number">№ 001</span></div>
+        <button id="about-toggle" class="round-button" aria-label="About this ride">i</button>
+      </header>
+      <section class="intro" id="intro">
+        <div class="eyebrow"><span class="tiny-line"></span> SÀI GÒN, IN NO PARTICULAR HURRY</div>
+        <h1>A little chaos.<br>A little <em>Vietnam.</em></h1>
+        <p>Hop on. Let the city happen around you.</p>
+        <button id="start" class="start-button"><span class="play-icon">▶</span> Take a ride <span class="button-arrow">↗</span></button>
+        <div class="intro-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 14v-3a8 8 0 0 1 16 0v3M4 12H2v7h4v-7H4Zm16 0h2v7h-4v-7h2Z"/></svg> Headphones on. The street has a lot to say.</div>
+      </section>
+      <aside class="place-caption"><span class="coordinate">10°46′ N &nbsp; 106°41′ E</span><span class="place">Sài Gòn <span> / </span> Giờ tan tầm</span></aside>
+      <div class="scene-note"><span class="live-dot"></span><span id="street-note">Coffee brewing. Engines humming. Life happening.</span></div>
+      <footer class="ride-controls">
+        <div class="playback"><button id="play" class="round-button play-control" aria-label="Pause ride">Ⅱ</button><div class="ride-label">THE LONG WAY HOME<span>180 seconds of everyday life</span></div></div>
+        <div class="timeline"><div class="time-row"><span id="elapsed">00:00</span><span class="loop-label">↻ &nbsp; ENDLESS LITTLE LOOP</span><span>03:00</span></div><input id="progress" aria-label="Ride position" type="range" min="0" max="180" value="0" step="0.1" /></div>
+        <div class="utilities"><button id="sound" class="sound-button" aria-label="Turn street sound on"><svg id="sound-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 4 5 9H2v6h3l6 5V4Z"/><path id="sound-waves" d="m16 9 6 6m0-6-6 6"/></svg><span id="sound-label">Sound off</span></button><input id="volume" type="range" min="0" max="1" step="0.01" value="0.7" aria-label="Street sound volume"/><span class="control-divider"></span><button id="cinema" class="round-button" aria-label="Toggle cinema mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button></div>
+      </footer>
+      <div id="cinema-hint">Press H to bring the city controls back</div>
+      <dialog id="about"><button id="about-close" class="round-button" aria-label="Close about">×</button><div class="eyebrow">A SMALL LOVE LETTER TO THE STREET</div><h2>Lượn phố.</h2><p>Vietnamese for wandering around town. No destination, just a little ride through the beautiful commotion of everyday life.</p><p>A handmade, stylized Sài Gòn: sidewalk cafés, shop-house balconies, too many signs, and just enough room for one more scooter.</p><p class="about-small">A 3-minute repeating Three.js scene with synthesized spatial street audio. Start the ride to enable sound.</p><div class="shortcuts"><span><kbd>Space</kbd> Pause</span><span><kbd>M</kbd> Sound</span><span><kbd>H</kbd> Cinema</span></div></dialog>
+      <div id="error" hidden></div>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
