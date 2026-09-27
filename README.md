@@ -39,7 +39,15 @@ formatting. Generated output and bundled skills are excluded from both tools.
 
 96 procedural shop houses with Vietnamese signs, projecting signs, striped awnings, balconies, laundry, air conditioners, water tanks, utility cables, food carts, sidewalk cafés, fruit stalls, plants, pedestrians, and dogs. 45 moving scooters, a passing van, parked scooters, and a distinct rider with a backpack. Warm sunlight, cool sky fill, procedural environment reflections, and distinct paint, steel, rubber, fabric, and window finishes give the scene depth. Materials are cached by color and finish, and geometry batches preserve shadow settings so roads receive shadows without casting them. Distance haze and material-batched geometry keep the scene lightweight. No downloaded model or texture assets are required. Interface fonts use Google Fonts, with system fallbacks.
 
-`src/world.ts` builds the scene and computes periodic motion. `src/main.ts` owns playback and accessible controls. `src/audio.ts` is a separate synthesized soundscape, authored by a dedicated GPT-6 Astra agent. Its 205-event score repeats every three minutes with overlapping scooter/car horns, engines, spatial pass-bys, wind, street murmur, cooking, bells, and dogs. The audio is synthesized, not a field recording or intelligible Vietnamese speech. Audio starts only after a user gesture and fades out when the tab is hidden.
+`src/world.ts` assembles the scene and coordinates periodic motion, collisions, rendering, and cleanup. Reusable construction code lives in three folders:
+
+- `src/scene/` — primitive meshes, shared materials, canvas signs, geometry batching, environment setup, and seeded math helpers.
+- `src/models/` — vehicles and street props assembled from primitives.
+- `src/street/` — storefronts, street chunks, and ride dimensions/timing.
+
+Models share geometry and material resources; cleanup remains owned by the world. Batch groups before positioning their root, since batching bakes transforms into the geometry. The seeded random sequence and construction order keep the city reproducible.
+
+`src/main.ts` owns playback and accessible controls. `src/audio.ts` is a separate synthesized soundscape, authored by a dedicated GPT-6 Astra agent. Its 205-event score repeats every three minutes with overlapping scooter/car horns, engines, spatial pass-bys, wind, street murmur, cooking, bells, and dogs. The audio is synthesized, not a field recording or intelligible Vietnamese speech. Audio starts only after a user gesture and fades out when the tab is hidden.
 
 ## Verification
 
