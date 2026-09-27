@@ -5,15 +5,28 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
+    "build": "npm run typecheck && vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "start": "sirv dist --host 127.0.0.1 --port 4173 --etag"
+    "start": "sirv dist --host 127.0.0.1 --port 4173 --etag --dev",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint --deny-warnings",
+    "lint:fix": "oxlint --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "tsx --test tests/*.test.ts",
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm test"
   },
   "dependencies": {
     "sirv-cli": "3.0.1",
     "three": "^0.180.0"
   },
   "devDependencies": {
+    "@types/node": "^26.6.3",
+    "@types/three": "^0.180.0",
+    "oxlint": "^1.85.0",
+    "prettier": "^3.9.9",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
     "vite": "^7.1.7"
   }
 }

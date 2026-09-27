@@ -1,0 +1,19 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "oxc", "unicorn"],
+  "categories": {
+    "correctness": "error"
+  },
+  "ignorePatterns": ["dist/**", "node_modules/**", ".agents/**", ".claude/**"],
+  "env": {
+    "browser": true
+  },
+  "overrides": [
+    {
+      "files": ["tests/**/*.ts", "vite.config.ts"],
+      "env": {
+        "node": true
+      }
+    }
+  ]
+}
