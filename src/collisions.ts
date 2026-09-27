@@ -1,3 +1,4 @@
+import { resolveContact } from './contact.ts';
 export interface Bike {
   id: string | number;
   x: number;
@@ -6,6 +7,9 @@ export interface Bike {
   mass: number;
   yaw: number;
   roll?: number;
+  halfWidth?: number;
+  halfLength?: number;
+  solid?: boolean;
 }
 interface CollisionState {
   x: number;
@@ -33,8 +37,12 @@ export function createCollisions(baseRoadSpeed: number) {
   let clock = 0;
   let impacts = 0;
   let roadTravel = 0;
+  let playerOffset = { x: 0, z: 0 };
+  let previousPoses = new Map<Bike['id'], Bike>();
   function reset() {
     states.clear();
+    previousPoses.clear();
+    playerOffset = { x: 0, z: 0 };
     previousTime = undefined;
     clock = 0;
     impacts = 0;
@@ -53,6 +61,19 @@ export function createCollisions(baseRoadSpeed: number) {
       previousTime = time;
     }
     const dt = elapsed <= 0.2 ? elapsed : 0;
+    const requestedPlayer = bikes.find((bike) => bike.id === 'player');
+    const requested = requestedPlayer
+      ? { x: requestedPlayer.x, z: requestedPlayer.z }
+      : undefined;
+    bikes = bikes.map((bike) =>
+      bike.id === 'player'
+        ? {
+            ...bike,
+            x: Math.max(-5.1, Math.min(5.1, bike.x + playerOffset.x)),
+            z: bike.z + playerOffset.z,
+          }
+        : bike,
+    );
     clock += dt;
     roadTravel += roadSpeed * dt;
     for (const bike of bikes) {
@@ -92,16 +113,10 @@ export function createCollisions(baseRoadSpeed: number) {
             clock < sb.cooldown
           )
             continue;
-          // Sweep the relative motion so a fast oncoming bike cannot skip contact.
-          const dx = (a.x - b.x) / 0.78,
-            dz = (a.z - b.z) / 1.75;
-          const vx = ((sa.vx - sb.vx) * dt) / 0.78,
-            vz = ((sa.vz - sb.vz) * dt) / 1.75;
-          const length = vx * vx + vz * vz;
-          const back = length
-            ? Math.max(0, Math.min(1, (dx * vx + dz * vz) / length))
-            : 0;
-          if ((dx - vx * back) ** 2 + (dz - vz * back) ** 2 > 1) continue;
+          const oldA = previousPoses.get(a.id) ?? a;
+          const oldB = previousPoses.get(b.id) ?? b;
+          const contact = resolveContact(oldA, a, oldB, b);
+          if (contact.x === a.x && contact.z === a.z) continue;
           const relativeSpeed = Math.hypot(sa.vx - sb.vx, sa.vz - sb.vz);
           if (relativeSpeed < 0.6) continue;
           const forceA = a.mass * Math.hypot(sa.vx, sa.vz);
@@ -112,7 +127,7 @@ export function createCollisions(baseRoadSpeed: number) {
             start: clock,
             side: player === a ? -1 : 1,
           };
-          const affected = loser === player ? [] : [loser];
+          const affected = loser === player || loser.solid ? [] : [loser];
           for (const bike of affected) {
             const other = bike === a ? b : a;
             const state = states.get(bike.id)!;
@@ -132,7 +147,7 @@ export function createCollisions(baseRoadSpeed: number) {
           sa.cooldown = sb.cooldown = clock + 1.2;
           impacts++;
         }
-    return bikes.map((bike) => {
+    const poses = bikes.map((bike) => {
       const state = states.get(bike.id)!;
       const crash = state.crash;
       if (!crash) {
@@ -145,10 +160,10 @@ export function createCollisions(baseRoadSpeed: number) {
         return {
           ...bike,
           crashed: false,
-          roll: (bike.roll || 0) + wobble * 0.065,
-          pitch: wobble * 0.025,
+          roll: (bike.roll || 0) + wobble * 0.22,
+          pitch: wobble * 0.1,
           y: 0.014 + Math.abs(wobble) * 0.025,
-          shock: wobble * 0.045,
+          shock: wobble * 0.18,
         };
       }
       const age = clock - crash.start;
@@ -176,10 +191,54 @@ export function createCollisions(baseRoadSpeed: number) {
         pitch: -0.13 * Math.sin(Math.min(1, age / 0.2) * Math.PI),
       };
     });
+    const player = poses.find((bike) => bike.id === 'player');
+    if (player && requested) {
+      const previous = previousPoses.get('player') ?? player;
+      let contact = false;
+      // Revisit contacts after each correction so adjacent vehicles remain solid.
+      for (let pass = 0; pass < 4; pass++) {
+        for (const obstacle of poses) {
+          if (obstacle === player) continue;
+          const old = previousPoses.get(obstacle.id) ?? obstacle;
+          const before = Math.abs(old.z - obstacle.z) > 40 ? obstacle : old;
+          const resolved = resolveContact(
+            pass === 0 ? previous : player,
+            player,
+            pass === 0 ? before : obstacle,
+            obstacle,
+          );
+          if (resolved.x !== player.x || resolved.z !== player.z) {
+            contact = true;
+            player.x = resolved.x;
+            player.z = resolved.z;
+          }
+        }
+      }
+      if (contact && dt) {
+        const state = states.get('player')!;
+        if (!state.bump) {
+          state.bump = {
+            start: clock,
+            side: Math.sign(player.x - requested.x) || 1,
+          };
+        }
+      }
+      playerOffset = { x: player.x - requested.x, z: player.z - requested.z };
+    }
+    previousPoses = new Map(poses.map((pose) => [pose.id, { ...pose }]));
+    return poses;
   }
   return {
     update,
     reset,
+    rebasePlayer(z: number) {
+      playerOffset = { x: 0, z: playerOffset.z - z };
+      for (const state of states.values()) {
+        state.z -= z;
+        if (state.crash) state.crash.z -= z;
+      }
+      for (const pose of previousPoses.values()) pose.z -= z;
+    },
     isCrashed: (id: Bike['id']) => Boolean(states.get(id)?.crash),
     getStats: () => ({
       impacts,

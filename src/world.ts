@@ -163,18 +163,37 @@ export function createWorld(container: HTMLElement) {
         mass: 170 + (i % 7 === 0 ? 60 : 0) + (i % 8 === 0 ? 25 : 0),
       });
     });
+    bikes.push({
+      id: 'van',
+      object: van,
+      x: -3.7,
+      z: wrap(-60 + (t / DURATION) * 540 + extraTravel, 180) - 145,
+      yaw: Math.PI,
+      speed: 3 - SPEED,
+      mass: 1800,
+      halfWidth: 1.05,
+      halfLength: 1.85,
+      solid: true,
+    });
     const poses = collisions.update(t, bikes, roadSpeed);
     const playerPose = poses[0];
+    // Keep the camera-relative rider near the origin after physical displacement.
+    if (steering.distance !== undefined) {
+      const recoil = playerPose.z - 3;
+      steering.x = playerPose.x;
+      steering.distance -= recoil / SPEED;
+      collisions.rebasePlayer(recoil);
+      poses.forEach((pose) => {
+        pose.z -= recoil;
+      });
+      chunks.forEach((chunk) => {
+        chunk.position.z -= recoil;
+      });
+    }
     for (const bike of poses) {
       bike.object.position.set(bike.x, bike.y, bike.z);
       bike.object.rotation.set(bike.pitch, bike.yaw, bike.roll);
     }
-    van.position.set(
-      -3.7,
-      0,
-      wrap(-60 + (t / DURATION) * 540 + extraTravel, 180) - 145,
-    );
-    van.rotation.y = Math.PI;
     lookX += (pointer.x - lookX) * Math.min(1, dt * 2);
     lookY += (pointer.y - lookY) * Math.min(1, dt * 2);
     const mobile = innerWidth < 700;
