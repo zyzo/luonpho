@@ -10,7 +10,7 @@ Set secrets in your shell (do not place production credentials in the repository
 export GITHUB_WEBHOOK_SECRET='...'
 export GITHUB_APP_ID='123'
 export GITHUB_APP_PRIVATE_KEY='-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----'
-docker compose -f services/chucongan/compose.yaml up --build
+docker compose -f agents/chucongan/compose.yaml up --build
 ```
 
 Optional `GITHUB_INSTALLATION_ID` and `GITHUB_REPOSITORY=zyzo/luonpho` restrict accepted deliveries. The service only accepts signed `POST /webhooks/github` requests and provides `GET /health`.

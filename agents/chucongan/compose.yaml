@@ -2,7 +2,7 @@ services:
   chucongan:
     build:
       context: ../..
-      dockerfile: services/chucongan/Dockerfile
+      dockerfile: agents/chucongan/Dockerfile
     environment:
       DATABASE_URL: postgres://chucongan:chucongan@postgres:5432/chucongan
       GITHUB_WEBHOOK_SECRET: ${GITHUB_WEBHOOK_SECRET:?set in environment}

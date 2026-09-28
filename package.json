@@ -9,13 +9,13 @@
     "preview": "vite preview --host 0.0.0.0",
     "start": "sirv dist --host 127.0.0.1 --port 4173 --etag --dev",
     "typecheck": "tsc --noEmit && npm run reviewer:typecheck",
-    "reviewer:typecheck": "npm --prefix services/chucongan run typecheck",
-    "reviewer:build": "npm --prefix services/chucongan run build",
+    "reviewer:typecheck": "npm --prefix agents/chucongan run typecheck",
+    "reviewer:build": "npm --prefix agents/chucongan run build",
     "lint": "oxlint --deny-warnings",
     "lint:fix": "oxlint --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "tsx --test tests/*.test.ts && npm --prefix services/chucongan test",
+    "test": "tsx --test tests/*.test.ts && npm --prefix agents/chucongan test",
     "check": "npm run typecheck && npm run lint && npm run format:check && npm test"
   },
   "dependencies": {

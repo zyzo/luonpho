@@ -1,6 +1,6 @@
 node_modules/
 dist/
-services/chucongan/dist/
+agents/chucongan/dist/
 .env
 .env.*
 !.env.example
