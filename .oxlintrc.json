@@ -10,7 +10,11 @@
   },
   "overrides": [
     {
-      "files": ["tests/**/*.ts", "vite.config.ts"],
+      "files": [
+        "tests/**/*.ts",
+        "vite.config.ts",
+        "services/chucongan/**/*.ts"
+      ],
       "env": {
         "node": true
       }
