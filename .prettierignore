@@ -4,3 +4,6 @@ package-lock.json
 skills-lock.json
 .agents/
 .claude/
+.chucongan/
+.env*
+*.pem

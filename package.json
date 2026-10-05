@@ -14,7 +14,10 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "tsx --test tests/*.test.ts",
-    "check": "npm run typecheck && npm run lint && npm run format:check && npm test"
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm test",
+    "review:pr": "npm run review --prefix tools/chucongan --",
+    "review:serve": "npm run serve --prefix tools/chucongan",
+    "review:check": "npm run check --prefix tools/chucongan"
   },
   "dependencies": {
     "sirv-cli": "3.0.1",
